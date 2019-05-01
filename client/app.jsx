@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import Organizations from "./components/organizations";
+import Main from "./components/main";
+
+import NavBar from './components/navbar.jsx';
 
 class App extends Component {
   constructor() {
@@ -11,9 +16,15 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        Hello from React!
-      </div>
+      <Router>
+        <div>
+        <NavBar />
+          <div>
+            <Route exact path="/" component={Main} />
+            <Route path="/organizations" component={Organizations}/>
+          </div>
+        </div>
+      </Router>
     );
   }
 }

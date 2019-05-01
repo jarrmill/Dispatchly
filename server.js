@@ -1,5 +1,6 @@
-const express = require('express')
+const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -18,7 +19,6 @@ app.get('/api/users', (req, res) => {
       console.error('Error in GET users, ', error)
       res.send();
     })
-  res.send();
 })
 app.post('/api/users', (req, res) => {
   const { email, name } = req.body;
@@ -78,6 +78,9 @@ app.post('/api/organizations', (req, res) => {
       res.send();
     })
 });
-
+//Routing workaround
+app.get('/organizations', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'public/index.html'));
+})
 app.listen(port, () => console.log(`Dispatch App listening on port ${port}!`));
 
