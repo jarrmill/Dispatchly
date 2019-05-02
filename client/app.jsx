@@ -24,6 +24,7 @@ class App extends Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
+    this.handleOrganization = this.handleOrganization.bind(this);
   }
   componentDidMount() {
     const user = JSON.parse(localStorage.getItem('User')) || null;
@@ -48,6 +49,10 @@ class App extends Component {
     console.log('This state: ', this.state);
     dbMethods.createTask(title, division, 'Hack Reactor', status, email);
   }
+  handleOrganization(name) {
+  //TODO: Split this into two funcs: adding a new organization and joining one
+    console.log('Fix me! ', name);
+  }
   render() {
     const { user } = this.state;
 
@@ -58,7 +63,11 @@ class App extends Component {
                                                   auth={ user }
                                                   handleNewTask={this.handleNewTask}
                                                   />} />
-          <Route path="/organizations" component={Organizations} />
+
+          <Route path="/organizations" render={() => <Organizations {...this.props}
+                                                         handleSubmit={this.handleOrganization}
+                                                         />}/>
+
           <Route path="/login" render={() => <Login {...this.props}
                                                 handleLogin={this.handleLogin}
                                                 />} />

@@ -11,9 +11,14 @@ app.use(express.static('public'));
 app.use(bodyParser.json())
 
 app.get('/api/users', (req, res) => {
-  Users.selectAllUsers()
-    .then((users) => {
-      res.send(users.rows);
+  let { email } = req.headers;
+  Users.selectUserByEmail
+    .then((user) => {
+      if(user.rows){
+        res.send(users.rows);
+      } else {
+        //user was just created;
+      }
     })
     .catch((error) => {
       console.error('Error in GET users, ', error)

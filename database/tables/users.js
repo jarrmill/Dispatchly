@@ -17,9 +17,9 @@ const createUser = function (email, name) {
   })
 }
 
-const selectAllUsers = function () {
+const selectUserByEmail = function (email) {
   return new Promise((resolve, reject) => {
-    client.query('select * from users', (err, res) => {
+    client.query(`select * from users WHERE email='${email}'`, (err, res) => {
       if (err) {
         reject(err);
       } else {
@@ -31,6 +31,6 @@ const selectAllUsers = function () {
 }
 
 module.exports = {
-  selectAllUsers,
+  selectUserByEmail,
   createUser
 }

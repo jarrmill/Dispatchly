@@ -1,10 +1,13 @@
 import React from 'react';
+import CreateOrganization from './CreateOrganization';
+import JoinOrganization from './JoinOrganization';
 
 export default function NavBar(props) {
 
   return (
     <div>
-      Hello from orgs!
+      <CreateOrganization handleSubmit={props.handleSubmit}/>
+      <JoinOrganization handleSubmit={props.handleSubmit}/>
     </div>
   );
 }
