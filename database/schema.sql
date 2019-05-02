@@ -18,10 +18,11 @@ CREATE TABLE IF NOT EXISTS divisions(
 CREATE TABLE IF NOT EXISTS tasks(
   id SERIAL PRIMARY KEY,
   title VARCHAR(100),
-  created_at TIMESTAMP DEFAULT NOW(),
   division VARCHAR(200),
-  organization VARCHAR(200) REFERENCES organizations(name),
-  assigned VARCHAR(200)
+  task_status VARCHAR(200),
+  assigned VARCHAR(200),
+  created_at TIMESTAMP DEFAULT NOW(),
+  organization VARCHAR(200) REFERENCES organizations(name)
 );
 
 CREATE TABLE IF NOT EXISTS users_organizations(

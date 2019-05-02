@@ -1,10 +1,10 @@
 const client = require('../config.js');
 
-const createTask = function (title, division, organization, assigned) {
+const createTask = function (title, division, task_status, assigned, organization ) {
   //ON CONFLICT DO NOTHING
   return new Promise((resolve, reject) => {
-    let query = `INSERT INTO tasks (title, division, organization, assigned)
-                 VALUES ('${title}', '${division}', '${organization}', '${assigned}');`;
+    let query = `INSERT INTO tasks (title, division, task_status, assigned, organization)
+                 VALUES ('${title}', '${division}', '${task_status}', '${assigned}', '${organization}');`;
     client.query(query, (err, res) => {
       if (err) {
         reject(err);
@@ -29,11 +29,24 @@ const selectAllTasks = function (organization) {
   });
 }
 
+const updateByTitle = function(title) {
+  return new Promise((resolve, reject) => {
+    client.query(`UPDATE tasks SET task_status = 'Complete' WHERE title='${title}'`, (err, res) => {
+      if(err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    })
+  })
+}
+
 const getTasksByEmail = function(email) {
   return new Promise((resolve, reject) => {
+    //the right join in this query is so it will return an organization in which the user may have not submitted any tasks yet
     const query = `select * from tasks
                    INNER JOIN organizations ON tasks.organization = organizations.name
-                   INNER JOIN users_organizations ON organizations.name = users_organizations.organization
+                   RIGHT JOIN users_organizations ON organizations.name = users_organizations.organization
                    INNER JOIN users ON users_organizations.username = users.name
                    WHERE users.email='${email}';`
     client.query(query, (err, res) => {
@@ -49,5 +62,6 @@ const getTasksByEmail = function(email) {
 
 module.exports = {
   getTasksByEmail,
-  createTask
+  createTask,
+  updateByTitle
 }

@@ -53,8 +53,8 @@ app.get('/api/tasks', (req, res) => {
 });
 
 app.post('/api/tasks', (req, res) => {
-  const { title, division, organization, assigned} = req.body;
-  Tasks.createTask(title, division, organization, assigned)
+  const { title, division, organization, task_status, assigned} = req.body;
+  Tasks.createTask(title, division, task_status, assigned, organization)
     .then((success) => {
       res.status(200);
       res.send();
@@ -62,6 +62,20 @@ app.post('/api/tasks', (req, res) => {
     .catch((error) => {
       res.status(300);
       console.error('Error in POST tasks', error);
+      res.send();
+    })
+})
+app.put('/api/tasks', (req, res) => {
+  const { title } = req.body;
+  Tasks.updateByTitle(title)
+    .then((success) => {
+      console.log('Updated task! ', title);
+      res.status(202);
+      res.send();
+    })
+    .catch((error) => {
+      res.status(200);
+      console.error('Error in PUT tasks', error);
       res.send();
     })
 })
