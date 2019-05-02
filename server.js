@@ -24,7 +24,7 @@ app.post('/api/users', (req, res) => {
   const { email, name } = req.body;
   Users.createUser(email, name)
     .then((success) => {
-      res.status(402);
+      res.status(202);
       res.send('Success!')
     })
     .catch((err) => {
@@ -46,11 +46,11 @@ app.post('/api/tasks', (req, res) => {
   const { title, division, organization, assigned} = req.body;
   Tasks.createTask(title, division, organization, assigned)
     .then((success) => {
-      res.status(402);
+      res.status(200);
       res.send();
     })
     .catch((error) => {
-      res.status(400);
+      res.status(300);
       console.error('Error in POST tasks', error);
       res.send();
     })
@@ -80,6 +80,9 @@ app.post('/api/organizations', (req, res) => {
 });
 //Routing workaround
 app.get('/organizations', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'public/index.html'));
+})
+app.get('/login', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'public/index.html'));
 })
 app.listen(port, () => console.log(`Dispatch App listening on port ${port}!`));

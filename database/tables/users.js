@@ -10,7 +10,7 @@ const createUser = function (email, name) {
       if (err) {
         reject(err);
       } else {
-        console.log('Got all users!')
+        console.log('Created user: ', name);
         resolve(res);
       }
     }) 
