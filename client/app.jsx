@@ -45,13 +45,16 @@ class App extends Component {
     this.setState({ user: null });
   }
   handleNewTask(title, division, status = 'New'){
-    let { email } = this.state;
+    let { email } = this.state.user;
     console.log('This state: ', this.state);
     dbMethods.createTask(title, division, 'Hack Reactor', status, email);
   }
   handleOrganization(name) {
+    let { email } = this.state.user;
+
   //TODO: Split this into two funcs: adding a new organization and joining one
-    console.log('Fix me! ', name);
+    console.log('Fix me! ', email, name);
+    dbMethods.createOrg(email, name);
   }
   render() {
     const { user } = this.state;

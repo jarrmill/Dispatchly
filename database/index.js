@@ -1,11 +1,13 @@
 const Users = require('./tables/users');
 const Tasks = require('./tables/tasks');
 const Organizations = require('./tables/organizations');
+const UserOrganizations = require('./tables/organizations_users');
 
 module.exports = {
   Users,
   Tasks,
-  Organizations
+  Organizations,
+  UserOrganizations
 }
 
 

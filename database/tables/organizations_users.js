@@ -1,23 +1,22 @@
 const client = require('../config.js');
 
-const createOrganization = function (name) {
+const createEntry = function (email, organization) {
   //ON CONFLICT DO NOTHING
   return new Promise((resolve, reject) => {
-    let query = `INSERT INTO organizations (name)
-                 VALUES ('${name}') 
-                 ON CONFLICT DO NOTHING;`;
+    let query = `INSERT INTO users_organizations (username, organization)
+                 VALUES ('${email}', '${organization}');`;
     client.query(query, (err, res) => {
       if (err) {
         reject(err);
       } else {
-        console.log('Added new organization!')
+        console.log(`Added new user/organization link. ${email} - ${organization}`);
         resolve(res);
       }
     }) 
   })
 }
 
-const selectAllOrganizations = function (organization) {
+const selectOrganizationsByEmail = function (email) {
   return new Promise((resolve, reject) => {
     client.query('select * from organizations', (err, res) => {
       if (err) {
@@ -31,6 +30,5 @@ const selectAllOrganizations = function (organization) {
 }
 
 module.exports = {
-  selectAllOrganizations,
-  createOrganization
+  createEntry
 }

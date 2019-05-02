@@ -5,7 +5,11 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-const { Users, Tasks, Organizations } = require('./database');
+const { Users,
+        Tasks,
+        Organizations,
+        UserOrganizations,
+      } = require('./database');
 
 app.use(express.static('public'));
 app.use(bodyParser.json())
@@ -37,7 +41,8 @@ app.post('/api/users', (req, res) => {
     })
 })
 app.get('/api/tasks', (req, res) => {
-  Tasks.selectAllTasks()
+  const { email } = req.headers;
+  Tasks.getTasksByEmail( email )
     .then((results) => {
       res.send(results.rows);
     })
@@ -73,13 +78,21 @@ app.get('/api/organizations', (req, res) => {
 })
 
 app.post('/api/organizations', (req, res) => {
-  const { name } = req.body;
+  const { email, name } = req.body;
   Organizations.createOrganization(name)
     .then((data) => {
-      res.status(402);
+      UserOrganizations.createEntry(email, name)
+        .then((success) => {
+          res.status(200);
+          res.send();
+        })
+        .catch((error) => {
+          console.error('Error in POST org. ', error);
+          res.send();
+        })
       res.send();
     }).catch((error) => {
-      console.error('Problem in POST organizations. ', err);
+      console.error('Problem in POST organizations. ', error);
       res.send();
     })
 });

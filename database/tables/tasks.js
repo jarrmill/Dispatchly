@@ -29,7 +29,25 @@ const selectAllTasks = function (organization) {
   });
 }
 
+const getTasksByEmail = function(email) {
+  return new Promise((resolve, reject) => {
+    const query = `select * from tasks
+                   INNER JOIN organizations ON tasks.organization = organizations.name
+                   INNER JOIN users_organizations ON organizations.name = users_organizations.organization
+                   INNER JOIN users ON users_organizations.username = users.name
+                   WHERE users.email='${email}';`
+    client.query(query, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('Got user tasks!');
+        resolve(res);
+      }
+    })
+  });
+}
+
 module.exports = {
-  selectAllTasks,
+  getTasksByEmail,
   createTask
 }

@@ -21,4 +21,14 @@ const createTask = function(title, division, organization, assigned) {
     })
 }
 
-export default { login, createTask }
+const createOrg = function(email, orgName) {
+  axios.post('http://localhost:3000/api/organizations', { email, name: orgName })
+    .then((success) => {
+      console.log('Org posted');
+    })
+    .catch((err) => {
+      console.log('Error posting Org to DB');
+    })
+}
+
+export default { login, createTask, createOrg }
