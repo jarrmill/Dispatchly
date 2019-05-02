@@ -118,7 +118,7 @@ class App extends Component {
 
 
   render() {
-    const { user, tasks, selectedOrganization } = this.state;
+    const { user, tasks, selectedOrganization, history } = this.state;
 
     return (
       <Router history={this.state.history}>
@@ -126,6 +126,7 @@ class App extends Component {
           <Route exact path="/" render={() => <Main {...this.props}
                                                   auth={ user }
                                                   tasks={ tasks }
+                                                  history={ history }
                                                   selectedOrganization={ selectedOrganization }
                                                   handleNewTask={this.handleNewTask}
                                                   handleChangedOrganization={this.handleChangedOrgization}
