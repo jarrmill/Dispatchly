@@ -4,7 +4,8 @@ const createEntry = function (email, organization) {
   //ON CONFLICT DO NOTHING
   return new Promise((resolve, reject) => {
     let query = `INSERT INTO users_organizations (username, organization)
-                 VALUES ('${email}', '${organization}');`;
+                 VALUES ('${email}', '${organization}')
+                 ON CONFLICT DO NOTHING;`;
     client.query(query, (err, res) => {
       if (err) {
         reject(err);

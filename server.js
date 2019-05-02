@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const io = require('socket.io')();
 
 const app = express();
 const port = 3000;
+const io_port = 3001;
 
 const { Users,
         Tasks,
@@ -14,6 +16,17 @@ const { Users,
 app.use(express.static('public'));
 app.use(bodyParser.json())
 
+//socket.io stuff
+io.listen(io_port)
+console.log(`IO listening on port ${io_port}.`);
+
+io.on('connection', (client) => {
+  client.on('subscribeToTasks', (foo) => {
+    console.log('client is subscribing ot task with foo, ', foo);
+    client.emit('newTasks', new Date());
+  })
+})
+//
 app.get('/api/users', (req, res) => {
   let { email } = req.headers;
   Users.selectUserByEmail
@@ -51,11 +64,16 @@ app.get('/api/tasks', (req, res) => {
       res.send();
     })
 });
-
+app.get('/api/sockets', (req, res) => {
+  io.emit('newTasks', new Date())
+  res.send('Did you get it?');
+})
 app.post('/api/tasks', (req, res) => {
   const { title, division, organization, task_status, assigned} = req.body;
   Tasks.createTask(title, division, task_status, assigned, organization)
     .then((success) => {
+      io.emit('newTasks', new Date())
+
       res.status(200);
       res.send();
     })
@@ -70,6 +88,7 @@ app.put('/api/tasks', (req, res) => {
   Tasks.updateByTitle(title)
     .then((success) => {
       console.log('Updated task! ', title);
+      io.emit('newTasks', new Date())
       res.status(202);
       res.send();
     })

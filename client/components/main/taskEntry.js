@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 
 export default function TaskEntry(props) {
   const { task } = props;
-  console.log('My task!', task);
+
   return (task && task.title && task.task_status !== 'Complete') ?
     (
       <div>

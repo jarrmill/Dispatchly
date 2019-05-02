@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Router } from "react-router";
 import { Route } from "react-router-dom";
-import { createBrowserHistory } from "history"
+import { createBrowserHistory } from "history";
+import openSocket from 'socket.io-client';
 
 import Organizations from "./components/organizations";
 import Main from "./components/main";
@@ -22,6 +23,13 @@ class App extends Component {
       selectedOrganization: null
     };
 
+    const socket = openSocket('http://localhost:3001');
+    socket.on('newTasks', response => {
+      if(this.state.user){
+        this.getTasksByEmail(this.state.user.email)
+      }
+    });
+    socket.emit('subscribeToTasks', 'hello!');
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
@@ -32,22 +40,27 @@ class App extends Component {
   componentDidMount() {
     const user = JSON.parse(localStorage.getItem('User')) || null;
     if (user) {
-      dbMethods.getTasksByEmail(user.email)
-        .then((data) => {
-          let tasksByOrganization = {};
-          data.data.forEach((task) =>  {
-            if (tasksByOrganization[task.organization]){
-              tasksByOrganization[task.organization].push(task);
-            } else {
-              tasksByOrganization[task.organization] = [task];
-            }
-          })
-          let selectedOrganization = Object.keys(tasksByOrganization)[0];
-          this.setState({ user, tasks: tasksByOrganization, selectedOrganization  }, () => console.log('Mounted State: ', this.state));
-        })
+      this.setState({ user }, () => {
+        this.getTasksByEmail(this.state.user.email);
+      })
     } else {
       console.log('No user detected: ', this.state);
     }
+  }
+  getTasksByEmail(email) {
+    dbMethods.getTasksByEmail(email)
+    .then((data) => {
+      let tasksByOrganization = {};
+      data.data.forEach((task) =>  {
+        if (tasksByOrganization[task.organization]){
+          tasksByOrganization[task.organization].push(task);
+        } else {
+          tasksByOrganization[task.organization] = [task];
+        }
+      })
+      let selectedOrganization = (this.state.selectedOrganization) ? this.state.selectedOrganization : Object.keys(tasksByOrganization)[0];
+      this.setState({ tasks: tasksByOrganization, selectedOrganization  }, () => console.log('State reset: ', this.state));
+    })
   }
 
   handleLogin(email, name) {
