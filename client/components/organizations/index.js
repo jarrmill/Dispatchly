@@ -6,7 +6,6 @@ export default function NavBar(props) {
 
   return (
     <div>
-      <CreateOrganization handleSubmit={props.handleSubmit}/>
       <JoinOrganization handleSubmit={props.handleSubmit}/>
     </div>
   );

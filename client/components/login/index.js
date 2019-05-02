@@ -29,7 +29,6 @@ export default class Login extends Component {
   render() {
     return (
       <div>
-        Hello from Login!
         <Form>
           <Form.Group controlId="email">
             <Form.Label>Email Address</Form.Label>

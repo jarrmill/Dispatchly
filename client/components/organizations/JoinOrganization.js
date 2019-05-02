@@ -25,13 +25,12 @@ export default class CreateOrganization extends Component {
   render() {
     return (
       <div>
-        Hello from Join Organization 
         <Form>
           <Form.Group controlId="email">
-            <Form.Label>Title</Form.Label>
+            <Form.Label>Join an Organization</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter A New Organization Name"
+              placeholder="Enter an organization's name. If it doesn't exist we'll create it for you."
               onChange={this.handleNameChange}
               value={this.state.name}
             />

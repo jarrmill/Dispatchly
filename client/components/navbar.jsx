@@ -8,7 +8,7 @@ export default function NavBar(props) {
       <Navbar.Brand>Dispatchly</Navbar.Brand>
       <Nav.Link href="/">Home</Nav.Link>
       {
-        (props.user !== null) ? <Nav.Link href="/organizations">Edit your Organization</Nav.Link> : null
+        (props.user !== null) ? <Nav.Link href="/organizations">Edit Organizations</Nav.Link> : null
       }
 
       {

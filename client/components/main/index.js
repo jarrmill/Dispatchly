@@ -5,8 +5,8 @@ import TaskList from './taskList';
 
 export default function NavBar(props) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', backgroundColor:'#ccc'}}>
-      <div style={{width: '25vw', padding: '10px'}}>
+    <div style={{ display: 'flex', flexDirection: 'row', backgroundColor:'#ccc', height: 'auto', overflow: 'inherit'}}>
+      <div style={{width: '25vw'}}>
         <OrgList tasks={props.tasks}
                  selectedOrganization={props.selectedOrganization}
                  handleChangedOrganization={props.handleChangedOrganization} />

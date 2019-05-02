@@ -38,15 +38,24 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.getUserFromLocalStorage();
+  }
+
+  componentDidUpdate() {
+
+  }
+
+  getUserFromLocalStorage() {
     const user = JSON.parse(localStorage.getItem('User')) || null;
     if (user) {
       this.setState({ user }, () => {
         this.getTasksByEmail(this.state.user.email);
-      })
+      });
     } else {
       console.log('No user detected: ', this.state);
     }
   }
+
   getTasksByEmail(email) {
     dbMethods.getTasksByEmail(email)
     .then((data) => {
@@ -59,24 +68,30 @@ class App extends Component {
         }
       })
       let selectedOrganization = (this.state.selectedOrganization) ? this.state.selectedOrganization : Object.keys(tasksByOrganization)[0];
-      this.setState({ tasks: tasksByOrganization, selectedOrganization  }, () => console.log('State reset: ', this.state));
+      this.setState({ tasks: tasksByOrganization, selectedOrganization  });
     })
   }
 
   handleLogin(email, name) {
-    this.state.history.push('/');
+    console.log('Logging in!');
     const user = { "email" : email, "name": name }
     this.setState({ user }, () => {
       console.log(dbMethods);
       dbMethods.login(email, name);
+    }, () => {
+      this.setState({ user });
     });
     localStorage.setItem( "User", JSON.stringify(user));
+    this.state.history.push('/');
+    window.location.reload();
 
   }
 
   handleLogout() {
     localStorage.clear();
     this.setState({ user: null });
+    this.state.history.push('/')
+    window.location.reload();
   }
 
   handleNewTask(title, division, status = 'New'){
@@ -93,7 +108,9 @@ class App extends Component {
     let { email } = this.state.user;
     //TODO: Split this into two funcs: adding a new organization and joining one
     dbMethods.createOrg(email, name);
-    this.setState({selectedOrganization: name , tasks: {...this.state.tasks, [name]: []}})
+    this.setState({selectedOrganization: name , tasks: {...this.state.tasks, [name]: []}}, () => {
+      this.state.history.push('/');
+    })
   }
   handleChangedOrgization(newSelectedOrganization) {
     this.setState({ selectedOrganization: newSelectedOrganization });
