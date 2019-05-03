@@ -34,6 +34,7 @@ class App extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleNewTask = this.handleNewTask.bind(this);
     this.handleOrganization = this.handleOrganization.bind(this);
+    this.handleUserOrgDelete = this.handleUserOrgDelete.bind(this);
     this.handleChangedOrgization = this.handleChangedOrgization.bind(this);
   }
 
@@ -107,19 +108,34 @@ class App extends Component {
   handleOrganization(name) {
     let { email } = this.state.user;
     //TODO: Split this into two funcs: adding a new organization and joining one
-    dbMethods.createOrg(email, name);
-    this.setState({selectedOrganization: name , tasks: {...this.state.tasks, [name]: []}}, () => {
-      this.state.history.push('/');
+    dbMethods.createOrg(email, name)
+    .then((success) => {
+      this.setState({selectedOrganization: name , tasks: {...this.state.tasks, [name]: []}}, () => {
+        this.state.history.push('/');
+      })
+    }).catch((err) => {
+      console.error(err);
     })
   }
   handleChangedOrgization(newSelectedOrganization) {
     this.setState({ selectedOrganization: newSelectedOrganization });
   }
 
+  handleUserOrgDelete(email, organization) {
+    let { tasks } = this.state;
+    dbMethods.deleteUserOrgLink(email, organization)
+      .then((success) => {
+        delete tasks[organization];
+        this.setState({ tasks }, () => console.log('Mofos deleted!', this.state));
+      })
+      .catch((error) => {
+        console.log('Error in deleting user/organization link');s
+      })
+  }
 
   render() {
     const { user, tasks, selectedOrganization, history } = this.state;
-
+    console.log('Tasks: ', tasks);
     return (
       <Router history={this.state.history}>
         <NavBar user={user} handleLogout={this.handleLogout}/>
@@ -134,7 +150,11 @@ class App extends Component {
                                                   />} />
 
           <Route path="/organizations" render={() => <Organizations {...this.props}
-                                                         handleSubmit={this.handleOrganization}
+                                                         handleSubmit={this.handleOrganization }
+                                                         auth={ user }
+                                                         adminAddUser={ dbMethods.adminAddUser }
+                                                         handleUserOrgDelete={this.handleUserOrgDelete }
+                                                         tasks={ tasks }
                                                          />}/>
 
           <Route path="/login" render={() => <Login {...this.props}

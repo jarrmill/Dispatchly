@@ -110,9 +110,39 @@ app.get('/api/organizations', (req, res) => {
     })
 })
 
+app.post('/api/organizations/adduser', (req, res) => {
+  const { name, email, newUser } = req.body;
+  console.log('Received request for: ', name, email, newUser);
+  Organizations.selectOrganizationByName(name)
+    .then((results) => {
+      console.log('Got results: ', results);
+      if(results[0].admin === email) {
+        Users.createUser(newUser, newUser)
+          .then(() => {
+            UserOrganizations.createEntry(newUser, name)
+              .then((success) => {
+                res.send('Success!');
+              })
+              .catch((error) => {
+                console.error(error);
+                res.send('Error');
+              })
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+      } else {
+        res.send('Not an admin.');
+      }
+    })
+    .catch((error) => {
+      console.error('Error in post users_organizations: ', error);
+    })
+});
+
 app.post('/api/organizations', (req, res) => {
   const { email, name } = req.body;
-  Organizations.createOrganization(name)
+  Organizations.createOrganization(name, email)
     .then((data) => {
       UserOrganizations.createEntry(email, name)
         .then((success) => {
@@ -126,9 +156,26 @@ app.post('/api/organizations', (req, res) => {
       res.send();
     }).catch((error) => {
       console.error('Problem in POST organizations. ', error);
-      res.send();
+      if(error.code ==='23505') {
+        console.log('Org already created.');
+      }
+      res.send('Organization already created');
     })
 });
+app.delete('/api/organizations', (req, res) => {
+  const { email, organization } = req.headers;
+  console.log('Received delete request for - ', req.headers);
+  UserOrganizations.deleteEntry(email, organization)
+    .then((success) => {
+      res.status(202);
+      res.send();
+    })
+    .catch((error) => {
+      console.error('Error in deleting user_organizations link: ', error);
+      res.status(202)
+      res.send();
+    })
+})
 //Routing workaround
 app.get('/organizations', function(req, res) {
   res.sendFile(path.resolve(__dirname, 'public/index.html'));

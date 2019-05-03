@@ -23,8 +23,8 @@ export default class Login extends Component {
   }
   handleSubmit(e) {
     e.preventDefault();
-    const { email, name } = this.state;
-    this.props.handleLogin(email, name);
+    const { email } = this.state;
+    this.props.handleLogin(email, email);
   }
   render() {
     return (
@@ -33,10 +33,6 @@ export default class Login extends Component {
           <Form.Group controlId="email">
             <Form.Label>Email Address</Form.Label>
             <Form.Control type="email" placeholder="Enter email" onChange={this.handleEmailChange} />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter name" onChange={this.handleNameChange} />
           </Form.Group>
           <Button type="submit" onClick={this.handleSubmit} >
             Submit

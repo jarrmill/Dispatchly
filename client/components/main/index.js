@@ -6,7 +6,6 @@ import Login from './login';
 
 export default function Main(props) {
   let { auth, history } = props;
-  console.log('User: ', auth);
   return ( auth !== null) ? (
     <div style={{ display: 'flex', flexDirection: 'row', backgroundColor:'#ccc', height: 'auto', overflow: 'inherit'}}>
       <div style={{width: '25vw'}}>

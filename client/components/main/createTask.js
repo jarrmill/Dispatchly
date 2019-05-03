@@ -29,7 +29,7 @@ export default class CreateTask extends Component {
   render() {
     return (
       <div>
-        Hello from Create Task 
+        <h4>Create a New Task</h4> 
         <Form>
           <Form.Group controlId="email">
             <Form.Label>Title</Form.Label>
